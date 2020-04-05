@@ -212,3 +212,34 @@
     sudo tlp-stat -[b|c|t] # show bat|config|thermal stat 
     sudo tlp setcharge [ START_THRESH STOP_THRESH [ BAT0 | BAT1 ] ] # set charge threshold 
     ```
+* ### [Install Pi-Hole](https://linuxincluded.com/install-pi-hole-on-ubuntu/)
+    ```bash 
+    # start install pihole:
+    curl -sSL https://install.pi-hole.net | bash
+    pihole -a -p # to change password
+    pihole -d # to show diagnostic. 
+    pihole -r # to configure pihole again. 
+    # Choose An Interface: use wlan for wifi pi, use eth for wired connection.
+    pihole -t # tail dns query 
+    ```
+    Then set DNS to pihole ip to use. 
+    web interface through `pi.hole/admin` or `thinkpad.lan/admin` 
+    This web interface is using `lighttpd`
+    The http server config can be edit from:
+    `/etc/lighttpd/lighttpd.conf` 
+
+    To serve the admin page with apache2, nee to install php.
+    
+    To install php for apache2:
+    ```bash
+    sudo add-apt-repository ppa:ondrej/php
+    sudo apt-get update
+    sudo apt-get install php7.0
+    ```
+    After this, apache2 should serve php normally. 
+    ```bash 
+    # disable lighttp
+    sudo systemctl disable lighttpd
+    sudo systemctl enable apache2 
+    sudo service apache2 restart
+    ```
