@@ -198,3 +198,17 @@
     sudo ufw enable 
     sudo ufw status
     ```
+
+* ### [Power management](https://linrunner.de/en/tlp/docs/tlp-linux-advanced-power-management.html)
+    ```bash 
+    sudo add-apt-repository ppa:linrunner/tlp
+    sudo apt update
+    sudo apt install tlp tlp-rdw
+    tlp-stat -b # show that x201 need to install smapi
+    sudo apt install tp-smapi-dkms
+    sudo tlp start # start / restart tlp 
+    sudo tlp-stat -s # show tlp status 
+    sudo tlp [start|ac|bat]    
+    sudo tlp-stat -[b|c|t] # show bat|config|thermal stat 
+    sudo tlp setcharge [ START_THRESH STOP_THRESH [ BAT0 | BAT1 ] ] # set charge threshold 
+    ```
