@@ -255,7 +255,10 @@
 
     **Custom Host through Pi-Hole**
     
-    Edit `/etc/pihole/local.list` to add custom host name.
+    Edit `/etc/hosts` to add custom host name.
+    ```bash
+    192.168.86.9    thinkpad.lan
+    ```
     Then run [`pihole restartdns`](https://docs.pi-hole.net/core/pihole-command/) to restart dns service.
 
 * ### [Install Jellyfin](https://tipsmake.com/how-to-set-up-media-server-at-home-with-jellyfin-on-ubuntu)
@@ -293,7 +296,7 @@
     # restart apache 
     sudo systemctl restart apache2 
     # add movie.pi.hole to Pi-Hole host:
-    sudo nano /etc/pihole/local.list 
+    sudo nano /etc/hosts
     # Add ip and domain movie.pi.hole then restart host 
     pihole restartdns 
     ```
