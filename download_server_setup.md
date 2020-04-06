@@ -325,6 +325,10 @@
     ProxyPass / http://localhost:10000/
     ProxyPassReverse / http://localhost:10000/
     </VirtualHost>
+    # edit default apache settings:
+    sudo nano /etc/apache2/sites-available/000-default.conf
+    # add this line:
+    Redirect "/admin" "http://admin.pi.hole"
     
     sudo a2ensite admin.pi.hole
     sudo systemctl reload apache2
