@@ -243,3 +243,70 @@
     sudo systemctl enable apache2 
     sudo service apache2 restart
     ```
+    To set DHCP using Pi-Hole, Goto PI Hole settings -> DHPC tab, enable DHCP server. 
+    
+    Also need to allow DHCP in ufw:
+    ```
+    sudo ufw allow from any to any port 67 proto udp
+    ```
+
+    On google wifi app, set DNS to pihole ip address, secondary dns use google dns. set LAN DHCP pool to ip of pihole. 
+    Then reserve IP of pihole. Thus DHCP of google wifi will not assign IP, and all ips are assigened from pihole.
+
+    **Custom Host through Pi-Hole**
+    
+    Edit `/etc/pihole/local.list` to add custom host name.
+    Then run [`pihole restartdns`](https://docs.pi-hole.net/core/pihole-command/) to restart dns service.
+
+* ### [Install Jellyfin](https://tipsmake.com/how-to-set-up-media-server-at-home-with-jellyfin-on-ubuntu)
+    ```bash 
+    sudo apt install apt-transport-https
+    wget -O - https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo apt-key add -
+    echo "deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
+    sudo apt update
+    sudo apt install jellyfin
+    # manage jellyfin with 
+    sudo systemctl {action} jellyfin.service # or
+    sudo service jellyfin {action}
+    sudo ufw allow 8096 # jellyfin use port 8096
+    ```
+    Then can access jellyfin from: `<pi/hole>:8096`
+
+    Subtitle support: Install OpenSubtitle in plugins.
+
+    **[Add reverse proxy for Jellyfin](https://www.linode.com/docs/applications/media-servers/how-to-install-jellyfin/)**
+
+    ```bash
+    sudo a2enmod proxy proxy_http
+    sudo nano /etc/apache2/sites-available/movie.pi.hole.conf
+    # add following configuration for proxy.
+    <VirtualHost *:80>
+    ServerName movie.pi.hole
+    ErrorLog /var/log/apache2/jellyfin-error.log
+    CustomLog /var/log/apache2/jellyfin-access.log combined
+    ProxyPreserveHost On
+    ProxyPass "/" "http://127.0.0.1:8096/"
+    ProxyPassReverse "/" "http://127.0.0.1:8096/"
+    </VirtualHost>
+    # enable new website by:
+    sudo a2ensite movie.pi.hole.conf 
+    # restart apache 
+    sudo systemctl restart apache2 
+    # add movie.pi.hole to Pi-Hole host:
+    sudo nano /etc/pihole/local.list 
+    # Add ip and domain movie.pi.hole then restart host 
+    pihole restartdns 
+    ```
+    This will allow access jellyfin from *`movie.pi.hole`*. To access from pi.hole/movie, use redirect.
+
+    ```bash 
+    # edit default apache settings:
+    sudo nano /etc/apache2/sites-available/000-default.conf
+    # add this line:
+    Redirect "/movie" "http://movie.pi.hole"
+    ```
+
+
+
+
+    
