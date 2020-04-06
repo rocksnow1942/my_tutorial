@@ -306,6 +306,44 @@
     Redirect "/movie" "http://movie.pi.hole"
     ```
 
+* ### [Install Webmin](https://linuxize.com/post/how-to-install-webmin-on-ubuntu-18-04/)
+    ```bash 
+    sudo apt update
+    sudo apt install software-properties-common apt-transport-https wget
+    # import Webmin GPG key
+    wget -q http://www.webmin.com/jcameron-key.asc -O- | sudo apt-key add -
+    # enable webmin repo
+    sudo add-apt-repository "deb [arch=amd64] http://download.webmin.com/download/repository sarge contrib"
+    sudo apt install webmin
+    ```
+    [Setup host in apache for webmin:](https://vitux.com/install-and-configure-webmin-on-ubuntu/)
+    ```bash 
+    sudo nano /etc/apache2/sites-available/admin.pi.hole.conf
+    # similar to jellyfin, add following
+    <VirtualHost *:80>
+    ServerName admin.pi.hole
+    ProxyPass / http://localhost:10000/
+    ProxyPassReverse / http://localhost:10000/
+    </VirtualHost>
+    
+    sudo a2ensite admin.pi.hole
+    sudo systemctl reload apache2
+    # then similar to above, add admin.pi.hole to pihole host list
+
+    # Stop webmin from using TLS/SSL. 
+    sudo nano /etc/webmin/miniserv.conf
+    # change:
+    ssl=0
+
+    # Add your domain name to the list of allowed domains
+    sudo nano /etc/webmin/config
+    # add to the end:
+    referers=admin.pi.hole
+    # restart webmin
+    sudo systemctl restart webmin
+    ```
+    Then access webmin from admin.pi.hole
+
 
 
 
